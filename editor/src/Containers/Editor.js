@@ -256,13 +256,16 @@ class Editor extends Component {
 
   componentDidMount() {
     const id = this.props.match.params.id;
+    
+    const apiUrl = process.env.REACT_APP_API_URL || "";
+    const wsUrl = process.env.REACT_APP_WS_URL || "ws://localhost:8080";
 
     // Document creation API call
     axios
-      .post("/api", { id })
+      .post(`${apiUrl}/`, { id })
       .then((res) => {
         // Open websocket connection to ShareDB server
-        const rws = new ReconnectingWebSocket("/bar");
+        const rws = new ReconnectingWebSocket(`${wsUrl}/bar`);
         const connection = new shareDB.Connection(rws);
 
         // Create local doc instance
@@ -346,10 +349,11 @@ class Editor extends Component {
   handleRun = () => {
     this.setState({ runCodeDisabled: true });
     const code = this.state.editor.getValue();
+    const apiUrl = process.env.REACT_APP_API_URL || "";
 
     // Run code API call
     axios
-      .post("/api/code/run", {
+      .post(`${apiUrl}/code/run`, {
         code: code,
         input: this.state.input,
         id: this.props.match.params.id,

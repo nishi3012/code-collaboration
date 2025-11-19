@@ -3,8 +3,6 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 import VideoChatComponent from '../Components/VideoChat/videoChatComponent';
 import VideoHelper from './VideoHelper';
 
-const websocketURL = process.env.REACT_APP_WEB_SOCKET_URL;
-
 class VideoChat extends Component {
     constructor(props) {
         super(props);
@@ -26,7 +24,8 @@ class VideoChat extends Component {
     }
 
     componentDidMount() {
-        const videoSocket = new ReconnectingWebSocket(websocketURL + '/foo');
+        const wsUrl = process.env.REACT_APP_WS_URL || 'ws://localhost:8080';
+        const videoSocket = new ReconnectingWebSocket(`${wsUrl}/foo`);
 
         videoSocket.addEventListener('open', event => {
             console.log('connected to video server')
