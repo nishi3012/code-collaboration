@@ -1,11 +1,7 @@
 {
   "version": 2,
-  "builds": [
-    { "src": "editor/package.json", "use": "@vercel/static-build", "config": { "distDir": "build" } }
-  ],
-  "routes": [
-    { "src": "/(.*)", "dest": "/editor/$1" }
-  ],
-  "buildCommand": "cd editor && npm install && npm run build",
-  "outputDirectory": "editor/build"
+  "buildCommand": "npm run build",
+  "outputDirectory": "build",
+  "installCommand": "npm install",
+  "framework": "create-react-app"
 }
