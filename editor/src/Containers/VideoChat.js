@@ -86,12 +86,14 @@ class VideoChat extends Component {
     }
 
     componentWillUnmount() {
-        if (this.localRef.current.srcObject)
+        if (this.localRef.current && this.localRef.current.srcObject)
             this.localRef.current.srcObject.getTracks().forEach(track => track.stop());
-        if (this.remoteRef.current.srcObject)
+        if (this.remoteRef.current && this.remoteRef.current.srcObject)
             this.remoteRef.current.srcObject.getTracks().forEach(track => track.stop());
-        this.state.pc.close();
-        this.state.videoSocket.close();
+        if (this.state.pc)
+            this.state.pc.close();
+        if (this.state.videoSocket)
+            this.state.videoSocket.close();
     }
 
     addTrack = event => {
