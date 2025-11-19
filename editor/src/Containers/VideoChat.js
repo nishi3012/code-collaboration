@@ -42,6 +42,9 @@ class VideoChat extends Component {
         // Initializes media stream.
         let localMediaStream = null;
         navigator.mediaDevices.getUserMedia(mediaStreamConstraints).then(mediaStream => {
+            // Check if component is still mounted
+            if (!this.remoteRef.current) return;
+            
             // Handles success by adding the MediaStream to the video element.
             this.setState({ videoSocket, pc, gotMediaDevice: true });
 
@@ -72,7 +75,9 @@ class VideoChat extends Component {
                 // I listen to answerMade
                 pc.setRemoteDescription(new RTCSessionDescription(on['answerMade'].answer)).then(() => {
                     console.log('remote description set')
-                    this.localRef.current.srcObject = localMediaStream;
+                    if (this.localRef.current) {
+                        this.localRef.current.srcObject = localMediaStream;
+                    }
                     this.setState({ peerConnected: true });
                 }).catch(VideoHelper.error);
             }
@@ -98,7 +103,9 @@ class VideoChat extends Component {
 
     addTrack = event => {
         console.log('connect to peer');
-        this.remoteRef.current.srcObject = event.streams[0];
+        if (this.remoteRef.current) {
+            this.remoteRef.current.srcObject = event.streams[0];
+        }
     }
 
     createOffer = () => {
@@ -111,7 +118,9 @@ class VideoChat extends Component {
         this.state.pc.createAnswer().then(sdp => {
             this.state.pc.setLocalDescription(new RTCSessionDescription(sdp)).then(() => {
                 this.state.videoSocket.send(JSON.stringify({ makeAnswer: { answer: sdp } }));
-                this.localRef.current.srcObject = localMediaStream;
+                if (this.localRef.current) {
+                    this.localRef.current.srcObject = localMediaStream;
+                }
                 this.setState({ peerConnected: true });
             }).catch(VideoHelper.error)
         }).catch(VideoHelper.error);
